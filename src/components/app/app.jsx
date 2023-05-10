@@ -1,16 +1,34 @@
-import styles from "./app.module.css";
-import { data } from "../../utils/data";
+import React from 'react';
+import './app.css';
+import AppHeader from '../app-header/app-header';
+import Main from "../main/main";
+
+const UrlData = 'https://norma.nomoreparties.space/api/ingredients';
 
 function App() {
+  const [ingredients, setIngredients] = React.useState([]);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      return await fetch(UrlData)
+          .then((res) => {
+            if(res.ok) {
+              return res.json()
+            }
+            return Promise.reject(`Ошибка ${res.status}`);
+          })
+          .then((data) => setIngredients(data.data))
+          .catch((err) => console.error(err));
+    }
+
+    getData();
+  }, []);
+
   return (
-    <div className={styles.app}>
-      <pre style={{
-      	margin: "auto",
-      	fontSize: "1.5rem"
-      }}>
-      	Измените src/components/app/app.jsx и сохраните для обновления.
-      </pre>
-    </div>
+    <>
+      <AppHeader />
+      <Main ingredients={ingredients} />
+    </>
   );
 }
 
